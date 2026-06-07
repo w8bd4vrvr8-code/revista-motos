@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reportes</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+.card {
+border: 1px solid #ccc;
+padding: 15px;
+margin-bottom: 15px;
+border-radius: 10px;
+box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+.btn {
+display: inline-block;
+margin-top: 10px;
+background: #0077b6;
+color: white;
+padding: 6px 12px;
+border-radius: 5px;
+text-decoration: none;
+}
+</style>
+</head>
+<body>
+.btn:hover { background: #023e8a; }
+<h1>Reportes de Accidentes</h1>
+<div id="lista"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOULwxwbf3nOujZi2YATO-eiK_pU4SAeo",
+  authDomain: "reportes-de-accidentes-sollam.firebaseapp.com",
+  projectId: "reportes-de-accidentes-sollam",
+  storageBucket: "reportes-de-accidentes-sollam.firebasestorage.app",
+  messagingSenderId: "288843109639",
+  appId: "1:288843109639:web:c7dcbae26e3cfb366d21a2",
+  measurementId: "G-9WK3JLSK1C"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const lista = document.getElementById("lista");
+const q = query(collection(db, "Reportes"), orderBy("Fecha_Accidente", "desc"));
+const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+const data = doc.data();
+const div = document.createElement("div");
+div.className = "card";
+div.innerHTML = `
+<strong>Edad:</strong> ${data.Edad} <br>
+<strong>Usa casco:</strong> ${data.Usa_Casco} <br>
+<strong>Exceso de velocidad:</strong> ${data.Exceso_Velocidad} <br>
+<strong>Tipo de incidente:</strong> ${data.Tipo_Incidente} <br>
+<strong>Lesiones:</strong> ${data.Lesiones} <br>
+<strong>Ubicación:</strong> ${data.Ubicación} <br>
+<strong>Fecha del accidente:</strong> ${data.Fecha_Accidente || "No disponible"} <br>
+<strong>Fecha de registro:</strong> ${
+data.Fecha_Registro
+? data.Fecha_Registro.toDate().toLocaleDateString()
+: "No disponible"
+} <br>
+${
+data.Link
+? `<a href="${data.Link}" target="_blank" class="btn"> : `<span>? Sin evidencia</span>`
+Ver evidencia</a>`
+}
+`;
+lista.appendChild(div);
+});
+</script>
+</body>
+</html>
